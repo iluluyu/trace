@@ -1,0 +1,16 @@
+# LaTeX auxiliary files
+build/
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+# (注意：如果你想保留生成的PDF供直接阅读，就删掉上面这行 *.pdf)
+
+# Python
+__pycache__/
+*.py[cod]
+.venv
+.env
