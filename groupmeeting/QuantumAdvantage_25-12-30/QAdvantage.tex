@@ -1,0 +1,301 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{WritingLab}
+
+% Packages
+\usepackage{physics}
+\usepackage{braket}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{dsfont}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, shadows, fadings}
+
+% Metadata
+\title{Quantum Advantage in Identifying the Parity of Permutations with Certainty}
+\subtitle{A Non-Asymptotic Separation Based on Particle Statistics}
+\author{A. Diebra, S. Llorens, D. González-Lociga, A. Rico, \\ J. Calsamiglia, M. Hillery, and E. Bagan}
+\institute{Física Teòrica: Informació i Fenòmens Quantics, Universitat Autònoma de Barcelona \\ \& Department of Physics, Hunter College of CUNY}
+\date{\today}
+
+\begin{document}
+
+% --- Slide 1: Title ---
+\begin{frame}[plain, noframenumbering]
+    \titlepage
+\end{frame}
+
+% --- Slide 2: Context ---
+\begin{frame}{Introduction: The Quest for Quantum Advantage}
+    \begin{stylebox}[6]{Context}
+        Quantum Information Science seeks tasks where quantum systems fundamentally outperform classical ones.
+    \end{stylebox}
+
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{stylebox}[1]{Common Types of Advantage}
+                \begin{itemize}
+                    \item \textbf{Computational:} Shor's factoring, Grover's search.
+                    \item \textbf{Communication:} Superdense coding, complexity reduction.
+                    \item \textbf{Query Complexity:} Simon's problem, Bernstein-Vazirani.
+                \end{itemize}
+            \end{stylebox}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{stylebox}[5]{This Work's Focus}
+                A physically natural problem involving \textbf{permutations of particles}.
+                \begin{itemize}
+                    \item No Oracles.
+                    \item No Computational Promises.
+                    \item \textbf{Sharp, Non-asymptotic separation.}
+                \end{itemize}
+            \end{stylebox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Slide 3: The Problem Statement ---
+\begin{frame}{The Problem: Parity of a Hidden Permutation}
+    
+    % Placeholder for Problem Setup Diagram
+    \begin{center}
+    \begin{tikzpicture}
+        \node[draw=WLGray, dashed, rounded corners, minimum width=12cm, minimum height=3cm] (canvas) {};
+        \node[text=WLGray] at (canvas.center) {\textit{[Diagram Placeholder: Alice permutes $n$ particles inside a black box. Bob must guess Parity.]}};
+        
+        % Simple illustrative drawing code (commented out/simplified)
+        \node[circle, fill=WLTeal, inner sep=3pt] (p1) at (-4, 0) {1};
+        \node[circle, fill=WLTeal, inner sep=3pt] (p2) at (-3, 0) {2};
+        \node[circle, fill=WLTeal, inner sep=3pt] (p3) at (-2, 0) {3};
+        \node at (-1, 0) {$\dots$};
+        \draw[->, thick, WLOrange] (-0.5, 0) -- (0.5, 0) node[midway, above] {$\sigma \in S_n$};
+        \node[circle, fill=WLTeal, inner sep=3pt] (p1') at (2, 0) {?};
+        \node[circle, fill=WLTeal, inner sep=3pt] (p2') at (3, 0) {?};
+        \node at (4, 0) {$\dots$};
+    \end{tikzpicture}
+    \end{center}
+
+    \begin{sidebox}[1]{The Setup}
+        \textbf{Alice} applies a hidden permutation $\sigma$ to $n$ particles. \\
+        \tcblower
+        \textbf{Bob} must determine:
+        \begin{itemize}
+            \item Is $\sigma$ \textbf{Even}? (e.g., identity, 3-cycles)
+            \item Is $\sigma$ \textbf{Odd}? (e.g., single swap)
+        \end{itemize}
+    \end{sidebox}
+
+    \begin{feqbox}[4]
+        \textbf{Goal:} Identify parity with \textbf{Certainty} ($P_s = 1$).
+    \end{feqbox}
+\end{frame}
+
+% --- Slide 4: Classical Limitation ---
+\begin{frame}{The Classical Limit}
+    \begin{stylebox}[5]{Classical Hard Barrier}
+        To identify the permutation (and thus its parity) perfectly, distinguishable labels are required.
+    \end{stylebox}
+
+    \vspace{0.5em}
+
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \begin{itemize}
+                \item If particles have $n$ distinct labels (colors), $\sigma$ is readable.
+                \item If we have fewer than $n$ labels ($d < n$):
+            \end{itemize}
+            \begin{eqbox}[5]
+                P_{success} = \frac{1}{2} \quad (\text{Random Guessing})
+            \end{eqbox}
+            \footnotesize{Reason: Every permutation has an opposite-parity counterpart producing the same label arrangement.}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            % Placeholder for Pigeonhole/Label diagram
+            \begin{tikzpicture}
+                \draw[fill=BG_Gray, rounded corners] (0,0) rectangle (6,3.5);
+                \node[text=WLGray, align=center] at (3,1.75) {\textbf{[Image: Classical Failure]} \\ Labels: Red, Blue ($d=2$) \\ Particles: 3 ($n=3$) \\ $\sigma(R, B, B) \rightarrow (B, R, B)$ \\ Ambiguous Parity!};
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Slide 5: The Quantum Solution ---
+\begin{frame}{Theorem I: The Quadratic Quantum Advantage}
+    
+    \begin{theorem}[Main Result]
+        Perfect parity identification ($P_s = 1$) is achievable using quantum resources if the local dimension $d$ (number of orthogonal states per particle) satisfies:
+        \vspace{0.2em}
+        \begin{equation*}
+            d \ge d_{min} := \lceil \sqrt{n} \rceil
+        \end{equation*}
+    \end{theorem}
+
+    \begin{sidebox}[2]{Comparison}
+        \textbf{Classical Requirement}
+        $$ d_{cl} = n $$
+        \textit{Linear Scaling}
+        \tcblower
+        \textbf{Quantum Requirement}
+        $$ d_{qm} \approx \sqrt{n} $$
+        \textit{Quadratic Reduction}
+    \end{sidebox}
+
+    \begin{bfeqbox}[1]
+        Below $d = \lceil \sqrt{n} \rceil$, even Quantum Mechanics cannot help ($P_s = 1/2$).
+    \end{bfeqbox}
+\end{frame}
+
+% --- Slide 6: Mechanism - Symmetry Groups ---
+\begin{frame}{The Mechanism: Symmetry & Representation Theory}
+    
+    \begin{stylebox}[3]{Schur-Weyl Duality}
+        The Hilbert space decomposes into irreducible representations (irreps) of the Symmetric Group $S_n$ and unitary group $SU(d)$:
+        $$ (\mathbb{C}^d)^{\otimes n} \cong \bigoplus_{\lambda} \mathcal{K}_\lambda \otimes \mathcal{H}_\lambda $$
+    \end{stylebox}
+
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
+            \textbf{Key Insight:}
+            \begin{itemize}
+                \item We restrict actions to the \textbf{Alternating Group} $A_n$ (Even permutations).
+                \item Certain subspaces $\mathcal{K}_\lambda$ split or behave differently under even vs. odd permutations.
+                \item Specifically, we look for \textbf{Self-Conjugate} Young Diagrams or \textbf{Conjugate Pairs}.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.4\textwidth}
+             % Placeholder for Young Diagrams
+            \begin{tikzpicture}
+                \node[draw=TitleBlue, thick, rounded corners, minimum width=4cm, minimum height=2.5cm] (yd) {};
+                \node[text=TitleBlue, align=center] at (yd.center) {[Image: Young Diagrams] \\ Partition $\lambda \vdash n$ \\ vs $\lambda^T$ (Transpose)};
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Slide 7: Example n=4 (Qubits) ---
+\begin{frame}{Explicit Example: 4 Qubits ($n=4, d=2$)}
+    
+    \begin{outlinebox}[WLTeal]
+        Here $n=4$, so $\lceil \sqrt{4} \rceil = 2$. We can distinguish parity with Qubits!
+    \end{outlinebox}
+
+    \vspace{0.5em}
+
+    The Hilbert space decomposes into spin sectors $j=2, 1, 0$:
+    \begin{eqbox}[3]
+        (\mathbb{C}^2)^{\otimes 4} \cong (\mathcal{K}_2 \otimes \mathcal{H}_2) \oplus (\mathcal{K}_1 \otimes \mathcal{H}_1) \oplus (\mathcal{K}_0 \otimes \mathcal{H}_0)
+    \end{eqbox}
+
+    \begin{itemize}
+        \item The $j=0$ sector ($\mathcal{K}_0$) corresponds to the partition $[2,2]$ (Self-conjugate).
+        \item Under $A_4$ (even perms), $\mathcal{K}_0$ splits into orthogonal subspaces $\mathcal{K}_{0a}$ and $\mathcal{K}_{0b}$.
+        \item \textbf{Odd permutations swap these subspaces.}
+    \end{itemize}
+
+    \begin{feqbox}[5]
+        \sigma_{odd} \ket{\psi_e} \perp \sigma_{even} \ket{\psi_e}
+    \end{feqbox}
+\end{frame}
+
+% --- Slide 8: The "M4" State ---
+\begin{frame}{The Parity-Detecting State ($n=4$)}
+    
+    Using the projector onto the invariant subspace, we derive the explicit state (Fourier-type combination of Dicke states):
+
+    \begin{bfeqbox}[1]
+        \ket{\psi_e} = \ket{0011} + \ket{1100} + \zeta_3 (\ket{0101} + \ket{1010}) + \zeta_3^2 (\ket{0110} + \ket{1001})
+    \end{bfeqbox}
+    \centering \footnotesize{where $\zeta_3 = e^{2\pi i / 3}$.}
+
+    \vspace{1em}
+    
+    \begin{sidebox}[6]{Protocol}
+        1. Prepare $\ket{\psi_e}$. \\
+        2. Alice applies unknown $\sigma$. \\
+        3. Bob measures projector $P = \ketbra{\psi_e}{\psi_e}$. \\
+        \tcblower
+        If Outcome = 1 $\to$ \textbf{Even}. \\
+        If Outcome = 0 $\to$ \textbf{Odd}.
+    \end{sidebox}
+\end{frame}
+
+% --- Slide 9: General Construction ($d=3, n=5$) ---
+\begin{frame}{Higher Dimensions: 5 Qutrits}
+    For $n=5$, we need $d \ge \lceil \sqrt{5} \rceil = 3$ (Qutrits).
+    
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Irrep Construction:}
+            \begin{itemize}
+                \item We use the partition $[3, 1, 1]$ (Self-conjugate).
+                \item Dimension of irrep = 6.
+                \item State is a complex superposition of permutations of $\ket{00012}$.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+             % Placeholder for Complex State Vis
+            \begin{tikzpicture}
+                \node[draw=WLGreen, dashed, fill=BG_Teal, rounded corners, minimum width=5cm, minimum height=3cm] (state) {};
+                \node[text=WLGreen, align=center] at (state.center) {\textbf{[Image: State Representation]} \\ Basis: $\ket{00012}$ \\ Coefficients involve \\ 60 permutations ($A_5$)};
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+
+    \begin{eqbox}[2]
+        \ket{\psi_e} \propto \sum_{\sigma \in A_5} \overline{\chi}(\sigma) \sigma \ket{00012}
+    \end{eqbox}
+    \footnotesize{This requires no ancillas, just the 5 particles.}
+\end{frame}
+
+% --- Slide 10: Entanglement Requirements ---
+\begin{frame}{The Cost: Entanglement}
+    Does this require high entanglement? Yes.
+    
+    \begin{stylebox}[4]{Geometric Measure of Entanglement (GME)}
+        $$ E(\ket{\psi}) = 1 - \max_{\ket{\phi} \in SEP} |\braket{\phi}{\psi}|^2 $$
+    \end{stylebox}
+
+    \begin{center}
+    \begin{tabular}{c c c c}
+        \hline
+        \textbf{Particles ($n$)} & \textbf{Local Dim ($d$)} & \textbf{Required GME} & \textbf{Max Possible GME} \\
+        \hline
+        3 & 2 & 5/9 & 5/9 (Max) \\
+        4 & 2 & 7/9 & 7/9 (Max) \\
+        5 & 3 & 17/20 & $\approx 0.96$ (Near Max) \\
+        \hline
+    \end{tabular}
+    \end{center}
+
+    \begin{fillbox}[BG_Orange]
+        \textcolor{WLOrange}{\textbf{Conclusion:}} Parity identification requires entanglement that is maximal or close to maximal.
+    \end{fillbox}
+\end{frame}
+
+% --- Slide 11: Summary ---
+\begin{frame}{Summary & Outlook}
+    
+    \begin{stylebox}[1]{Key Achievements}
+        \begin{itemize}
+            \item \textbf{Quantum Advantage:} $d \sim \sqrt{n}$ vs Classical $d \sim n$.
+            \item \textbf{Certainty:} Deterministic identification, not probabilistic.
+            \item \textbf{Constructive:} Explicit states provided for small $n$.
+        \end{itemize}
+        \tcblower
+        \textbf{Future Directions}
+        \begin{itemize}
+            \item Experimental realization (State Prep).
+            \item Robustness against noise.
+            \item Extension to other symmetry groups.
+        \end{itemize}
+    \end{stylebox}
+
+    \vspace{1em}
+    \centering
+    \textit{"A simple, rigorous example of genuine quantum advantage requiring no oracles."}
+\end{frame}
+
+% --- Slide 12: End ---
+\ThankYouPage[Thank You\\ Questions?]
+
+\end{document}

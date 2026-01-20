@@ -1,0 +1,113 @@
+\documentclass[tikz, border=2pt]{standalone}
+\usepackage{tikz}
+\usepackage{amssymb} 
+\usetikzlibrary{arrows.meta, positioning, calc}
+
+% --- 配色方案 ---
+\definecolor{WLTeal}{HTML}{00897B}   
+\definecolor{WLOrange}{HTML}{FF7043} 
+\definecolor{WLViolet}{HTML}{5E35B1} 
+\definecolor{WLGray}{HTML}{546E7A}   
+
+\begin{document}
+
+\tikzset{
+    global style/.style={
+        node distance=0.15cm, % 球与球之间的紧凑间距保持不变
+        font=\sffamily
+    },
+    ball/.style={
+        circle, 
+        minimum size=0.65cm, 
+        inner sep=0pt, 
+        draw=none
+    },
+    blueball/.style={ball, fill=WLTeal},
+    redball/.style={ball, fill=WLOrange},
+    purpleball/.style={ball, fill=WLViolet}, 
+    boxstyle/.style={
+        draw=WLGray!60, 
+        dashed, 
+        line width=1pt,
+        rounded corners=4pt,
+        minimum width=0.9cm,  % <--- 修改点1：缩小方框宽度 (原1.4cm)
+        minimum height=0.9cm, % <--- 修改点2：稍微减小高度 (原1.0cm)
+        fill=gray!5,
+        align=center
+    },
+    labeltext/.style={font=\scriptsize\sffamily, text=WLGray, align=center},
+    titletext/.style={font=\small\bfseries\sffamily, text=WLGray!90, align=center}
+}
+
+\begin{tikzpicture}[global style]
+
+    % ============================================
+    % 左侧: Case 1 Distinguishable
+    % ============================================
+    \begin{scope}[local bounding box=case1]
+        % 1. 标题
+        \node[titletext] at (0, 1.0) {Case 1: Distinguishable ($d=n$)};
+
+        % 2. 中间：算符 (Box)
+        \node[boxstyle] (sigma1) at (0,0) {};
+        \node[text=WLOrange, font=\large\bfseries] at (sigma1.center) {$\sigma$};
+
+        % 3. 左侧输入 (青, 紫, 橙)
+        % <--- 修改点3：增加方框与球的距离 (0.2cm -> 0.5cm)，让箭头更长更明显
+        \node[redball]    (L1_3) [left=0.5cm of sigma1] {}; 
+        \node[purpleball] (L1_2) [left=of L1_3] {};
+        \node[blueball]   (L1_1) [left=of L1_2] {};
+        
+        % 箭头
+        \draw[->, >={Stealth[scale=0.8]}, line width=1pt, WLGray!70] (L1_3.east) -- (sigma1.west);
+
+        % 4. 右侧输出 (青, 橙, 紫)
+        % <--- 修改点4：同理增加右侧距离
+        \node[blueball]   (R1_1) [right=0.5cm of sigma1] {};
+        \node[redball]    (R1_2) [right=of R1_1] {};    
+        \node[purpleball] (R1_3) [right=of R1_2] {};    
+        
+        % 箭头
+        \draw[->, >={Stealth[scale=0.8]}, line width=1pt, WLGray!70] (sigma1.east) -- (R1_1.west);
+
+        % 5. 底部结论
+        \node[labeltext, below=0.2cm of sigma1] {Unique Parity \checkmark};
+    \end{scope}
+
+
+    % ============================================
+    % 右侧: Case 2 Indistinguishable
+    % ============================================
+    \begin{scope}[xshift=7.5cm, local bounding box=case2] 
+        % 1. 标题
+        \node[titletext] at (0, 1.0) {Case 2: Indistinguishable ($d < n$)};
+
+        % 2. 中间：算符
+        \node[boxstyle] (sigma2) at (0,0) {};
+        \node[text=WLOrange, font=\large\bfseries] at (sigma2.center) {$\sigma'$};
+
+        % 3. 左侧输入 (青, 青, 橙)
+        % <--- 修改点3：距离增加至 0.5cm
+        \node[redball]  (L2_3) [left=0.5cm of sigma2] {};
+        \node[blueball] (L2_2) [left=of L2_3] {};
+        \node[blueball] (L2_1) [left=of L2_2] {};
+        
+        \draw[->, >={Stealth[scale=0.8]}, line width=1pt, WLGray!70] (L2_3.east) -- (sigma2.west);
+
+        % 4. 右侧输出 (青, 青, 橙)
+        % <--- 修改点4：距离增加至 0.5cm
+        \node[blueball] (R2_1) [right=0.5cm of sigma2] {};
+        \node[blueball] (R2_2) [right=of R2_1] {};
+        \node[redball]  (R2_3) [right=of R2_2] {};
+        
+        \draw[->, >={Stealth[scale=0.8]}, line width=1pt, WLGray!70] (sigma2.east) -- (R2_1.west);
+
+        % 5. 底部结论
+        \node[labeltext, below=0.2cm of sigma2] {Ambiguous Parity ?\\(Even or Odd?)};
+    \end{scope}
+
+    % 中间分割线
+    \draw[WLGray!20, line width=1pt] (3.75, 1.2) -- (3.75, -1.0);
+
+\end{tikzpicture}
+\end{document}

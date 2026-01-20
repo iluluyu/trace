@@ -1,0 +1,744 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{WritingLab}
+
+% Packages
+\usepackage{physics}
+\usepackage{braket}
+\usepackage{tikz}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage{dsfont}
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, shadows, fadings}
+
+% Metadata
+% 1. 标题：保持你的手动换行，视觉平衡
+\title{Quantum Advantage in  \\ Identifying the Parity of Permutations with Certainty}
+
+\subtitle{
+    \texorpdfstring{%
+        % --- 页面上显示的内容 (带颜色、换行、加粗) ---
+        \textbf{\textcolor{TitleBlue}{Phys. Rev. Lett. (Published: Dec 23, 2025)}} \\
+        \vspace{0.3em}
+        \textcolor{WLGray}{Preprint: arXiv:2508.04310 [quant-ph] (Aug 6, 2025)}
+    }{%
+        % --- PDF 属性里记录的内容 (纯文本，防止报错) ---
+        Phys. Rev. Lett. (2025) - arXiv:2508.04310
+    }
+}
+
+% 3. 作者：这里列出【论文原作者】
+% 技巧：人名较多时，使用 \and 或者手动换行 \\ 来控制排版
+\author{
+    A. Diebra\inst{1}, S. Llorens\inst{1}, D. González-Lociga\inst{1}, A. Rico\inst{1}, \\
+    J. Calsamiglia\inst{1}, M. Hillery\inst{2}, and E. Bagan\inst{1}
+}
+
+% 4. 机构：这里列出【原作者单位】
+% 如果你是汇报人，通常不需要把复旦大学放在这里抢占位置，
+% 除非你想强调是在复旦大学的组会上汇报。
+\institute{
+    \inst{1} Universitat Autònoma de Barcelona (UAB) \\
+    \inst{2} Hunter College of CUNY
+}
+
+% 5. 日期：【最关键的修改】
+% 不要用 \today，而是写文献的具体日期和版本
+% 建议格式：[版本号] + [日期]
+\date{\today}
+
+% 6. (可选) 如果你想让 Title Page 更酷，加个 arXiv 的 logo 或者二维码
+% 需要 \usepackage{qrcode}
+% \titlegraphic{\qrcode[height=1.5cm]{https://arxiv.org/abs/2508.04310}}
+
+\begin{document}
+
+% --- Slide 1: Title ---
+\begin{frame}[plain, noframenumbering]
+    \titlepage
+\end{frame}
+
+% --- Slide 2: Context ---
+\begin{frame}{Introduction: The Quest for Quantum Advantage}
+    \begin{stylebox}[6]{Context}
+        Quantum Information Science seeks tasks where quantum systems fundamentally outperform classical ones.
+    \end{stylebox}
+
+    \begin{stylebox}[5]{This Work's Focus}
+        A physically natural problem involving \textbf{permutations of particles}.
+        \begin{itemize}
+            \item No Oracles.
+            \item No Computational Promises.
+            \item \textbf{Sharp, Non-asymptotic separation.}
+        \end{itemize}
+    \end{stylebox}
+\end{frame}
+
+% --- Slide 3: The Problem Statement ---
+\begin{frame}{The Problem: Parity of a Hidden Permutation}
+    
+    % Placeholder for Problem Setup Diagram
+    \begin{center}
+        \includegraphics[width=0.8\textwidth]{pic/parity_diagram.pdf}
+    \end{center}
+
+    \begin{stylebox}[1]{Problem Definition}
+        Given a set of $n$ particles subject to a hidden permutation $\sigma \in S_n$, determine the parity:
+        \begin{itemize}
+            \item Is $\sigma$ \textbf{Even}? (e.g., identity, 3-cycles)
+            \item Is $\sigma$ \textbf{Odd}? \phantom{e} (e.g., single swap)
+        \end{itemize}
+    \end{stylebox}
+
+    \begin{eqbox}[3]
+        \textbf{Goal:} Identify parity with \textbf{Certainty} ($P_s = 1$).
+    \end{eqbox}
+\end{frame}
+
+% --- Slide 4: Classical Limitation ---
+\begin{frame}{The Classical Limit}
+        % 3. 插图区域 (你要求的代码)
+    % 这里展示 d < n 时的不可区分性 (Indistinguishability)
+    \begin{center}
+        \includegraphics[width=0.9\textwidth]{pic/parity_comparison.pdf}
+    \end{center}
+    \vspace{-1.5em}
+    \begin{columns}[T,onlytextwidth]
+        \tcbset{equal height group=cl}%
+        \begin{column}{0.48\textwidth}
+            \begin{ceqbox}[1]
+                    Full Distinguishability ($n$ labels)
+                    \begin{itemize}
+                        \item perfectly reconstruct the permutation
+                        \item determine its parity
+                        \item $P_s = 1$
+                    \end{itemize}              
+            \end{ceqbox}
+        \end{column}
+        \begin{column}{0.48\textwidth} 
+            \begin{ceqbox}[5]
+                    Insufficient Labels ($< n$ labels)
+                                    \begin{itemize}
+                    \item perfect identification becomes impossible
+                    \item indistinguishable opposite-parity counterparts
+                    \item limited to random guessing
+                    \item $P_s = 1/2$
+                \end{itemize}                       
+            \end{ceqbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Slide 5: The Quantum Solution ---
+\begin{frame}{Theorem: The Quadratic Quantum Advantage}
+    
+    \begin{theorem}[Main Result]
+        Perfect parity identification ($P_s = 1$) is achievable if
+        \vspace{0.2em}
+        \begin{equation*}
+            d \ge d_{min} := \lceil \sqrt{n} \rceil
+        \end{equation*}
+        Below this threshold, assuming all permutations are equally likely, parity remains indistinguishable and random guessing is the best one can do ($P_s = 1/2$).
+    \end{theorem}
+
+    \begin{tceqbox}[1]{}
+        Below $d = \lceil \sqrt{n} \rceil$, even Quantum Mechanics cannot help ($P_s = 1/2$).
+    \end{tceqbox}
+\end{frame}
+% --- Slide: Explicit Example (4 Qubits) ---
+\begin{frame}{Example: 4 Qubits ($n=4, d=2$)}
+    \begin{stylebox}[1]{Physical Setup}
+        Consider a system of \textbf{four spin-1/2 particles}. 
+        Alice acts by reshuffling their positions \textit{without} disturbing the spin degrees of freedom.
+    \end{stylebox}
+
+    \vspace{-1.5em}
+
+    % 2. 核心分解公式 (使用定理色 TitleBlue)
+    % 对应原文 Eq. (3)
+    \begin{stylebox}[3]{{Schur-Weyl Decomposition}}
+        \begin{align*}
+        (\mathbb{C}^2)^{\otimes 4} \cong 
+        (\mathcal{K}_2 \otimes \mathcal{H}_2) \oplus 
+        (\mathcal{K}_1 \otimes \mathcal{H}_1) \oplus 
+        (\mathcal{K}_0 \otimes \mathcal{H}_0)
+        \end{align*}
+    \end{stylebox}
+    \vspace{-1em}
+    \begin{columns} 
+        \begin{column}{0.45\textwidth}
+            \begin{itemize}
+                \item $\mathcal{H}_j$: $SU(2)$-invariant subspaces (labeled by total spin $j$).
+                \item $SU(2)$ acts \textit{only} on $\mathcal{H}_j$ and trivially on $\mathcal{K}_j$.
+            \end{itemize} 
+        \end{column}
+        \begin{column}{0.45\textwidth} 
+            \begin{stylebox}[6]{Multiplicity Spaces ($\mathcal{K}_j$)}
+                \begin{itemize}
+                    \item $j=2$: $\mathcal{K}_2 \cong \mathbb{C}$ \hfill (1 copy)
+                    \item $j=1$: $\mathcal{K}_1 \cong \mathbb{C}^3$ \hfill (3 copies)
+                    \item $j=0$: $\mathcal{K}_0 \cong \mathbb{C}^2$ \hfill (2 copies)
+                \end{itemize}
+            \end{stylebox}
+        \end{column}
+    \end{columns}
+\end{frame}
+\begin{frame}{Symmetry and Representation: The $S_4$ Perspective}
+        \begin{ceqbox}{\textbf{Permutational Symmetry ($S_4$)}}
+        \begin{itemize}
+            \item Reshuffling 4 qubits $\longleftrightarrow$ ``Rotation'' within subspaces $K_j$.
+            \item These spaces carry \textbf{irreducible representations (irreps)} of $S_4$.
+            \item \textit{Note:} No proper subspace is invariant under $\sigma|\psi\rangle$.
+        \end{itemize}
+        \end{ceqbox}
+        \begin{ceqbox}[2]{\textbf{Schur-Weyl Duality Structure}}
+            \begin{itemize}
+                \item Agent's operations are restricted to permutations.
+                \item \textbf{Consequence:} Action is \textbf{trivial} on spin sectors $H_j$.
+                \item \textbf{Interpretation:} 
+                \begin{itemize}
+                    \item $K_j$: Irrep spaces (Dynamic part).
+                    \item $H_j$: Multiplicity spaces (Static part).
+                \end{itemize}
+            \end{itemize}
+        \end{ceqbox}
+
+\end{frame}
+\begin{frame}{Restriction to Even Permutations ($A_4 \subset S_4$)}
+    % 第一部分：群论结构的改变
+    \begin{ceqbox}[2]{\textbf{Group Restriction:} Restrict agent actions to \textit{even permutations} ($A_4$).}
+        \begin{itemize}
+            \item $\mathcal{K}_1$ and $\mathcal{K}_2$: Remain irreducible.
+            \item $\mathcal{K}_0$: \textbf{Decomposes} into two orthogonal 1D invariant subspaces:
+            \[
+                \mathcal{K}_0 \xrightarrow{A_4} \mathcal{K}_{0a} \oplus \mathcal{K}_{0b}
+            \]
+        \end{itemize}
+    \end{ceqbox}
+    \vspace{-1.4em}
+    \begin{columns}[T,onlytextwidth]
+        \tcbset{equal height group=parity}%
+        \begin{column}{0.45\textwidth}
+                \begin{tceqbox}[1]{Action of Odd Permutations ($\sigma_{\text{odd}} \in S_4 \setminus A_4$)}
+                    Any odd permutation swaps the subspaces:
+                    \vspace{-0.5em}
+                    \[
+                        \sigma_{\text{odd}}: \mathcal{K}_{0a} \longleftrightarrow \mathcal{K}_{0b}
+                    \]
+                    \small{\textit{Note: This explains why $\mathcal{K}_{0a/b}$ are not invariant under the full group $S_4$.}}
+                \end{tceqbox}
+        \end{column}
+        \hfill
+        \begin{column}{0.53\textwidth} 
+            \begin{tceqbox}[3]{Parity Identification Protocol}
+                Prepare initial state $|\psi_e\rangle \in \mathcal{K}_{0a} \otimes \mathcal{H}_0$. The odd/even sectors become orthogonal:
+                \begin{equation}
+                    \sigma_{\text{odd}}|\psi_e\rangle \perp \sigma_{\text{even}}|\psi_e\rangle
+                \end{equation}
+                \textbf{Result:} Parity can be identified with certainty via projective measurement.
+            \end{tceqbox}   
+        \end{column}
+    \end{columns}
+\end{frame}
+% --- Slide: Explicit Construction of the State ---
+\begin{frame}{Explicit Construction: The M4 State}
+    
+    % 1. 构造逻辑：使用青色主题盒 (WLTeal)
+    \begin{tceqbox}[1]{Construction via Projection}
+        We construct $|\psi_e\rangle$ by projecting the basis state $|0011\rangle$ (with magnetic quantum number $m=0$) onto the invariant subspace $\mathcal{K}_{0a} \otimes \mathcal{H}_0$:
+        \vspace{-1em}
+        \begin{equation*}
+            |\psi_e\rangle = \mathcal{P}_{0a}|0011\rangle, \quad \text{where } \mathcal{P}_{0a} = \frac{1}{|A_4|} \sum_{\sigma \in A_4} \overline{\chi}_{0a}(\sigma)\sigma
+        \end{equation*}
+    \end{tceqbox}
+
+    \vspace{-1em}
+
+    % 2. 核心公式：使用深色填充盒 (TitleBlue) 强调结果
+    \begin{tceqbox}[3]{Computational Basis Expansion:}
+        \vspace{-2em}
+        \begin{align*}
+            |\psi_e\rangle = (|0011\rangle + |1100\rangle) + \zeta_3 \phantom{^1} (|0101\rangle + |1010\rangle) + \zeta_3^2 \phantom{^1} (|0110\rangle + |1001\rangle)
+        \end{align*}
+    \end{tceqbox}
+
+    \vspace{-1.5em}
+
+    % 3. 补充说明：双栏布局
+    \begin{columns}[T,onlytextwidth]
+        \tcbset{equal height group=M4}%
+        \begin{column}{0.65\textwidth}
+            % 左侧：物理意义 (灰色/引用色)
+            \begin{tceqbox}[6]{}
+                \begin{itemize}
+                    \item Also known as the \textbf{M4 (or D4) state}.
+                    \item A Fourier-type combination of \textbf{Dicke states}.
+                \end{itemize}
+            \end{tceqbox}
+        \end{column}
+        \begin{column}{0.3\textwidth}
+            % 右侧：数学细节 (绿色/算法色)
+            \begin{tceqbox}[2]{}
+                $\zeta_3 = e^{i 2\pi/3}$ (Cubic root of unity).
+            \end{tceqbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+% --- Slide: Young Diagrams Labeling ---
+\begin{frame}{Labeling Invariant Subspaces: Young Diagrams}
+    \vspace{0.2em}
+    \begin{center}
+        \includegraphics[width=0.8\linewidth]{pic/young_diagrams.pdf}
+    \end{center}
+    \vspace{-1.2em}
+    \begin{columns}[T, totalwidth=\textwidth]
+        \tcbset{equal height group=YD}%
+        \begin{column}{0.48\textwidth}
+            % 左侧：物理意义 (灰色/引用色)
+            \begin{stylebox}[1]{Partitions \& Young Diagrams (YDs)}
+                Subspaces are labeled by partitions $\lambda \vdash n$, visualized as YDs with $n$ boxes.
+                \begin{gather*}
+                    \lambda = [\lambda_1, \lambda_2, \dots] \\
+                    (\lambda_1 \ge \lambda_2 \ge \dots \ge 0, \;\; \sum \lambda_p = n)
+                \end{gather*}
+            \end{stylebox}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{outlinebox}[WLBlue]
+                \begin{itemize}
+                    \item \textbf{$S_n$ Irreps ($\mathcal{K}_\lambda$):} 
+                    Correspond to \textit{any} distinct $\lambda \vdash n$.
+                    \item \textbf{$SU(d)$ Irreps ($\mathcal{H}_\lambda$):} 
+                    Restricted by dimension $d$:
+                    \[
+                        \ell(\lambda) \le d
+                    \]
+                    (The YD cannot have more than $d$ rows)
+                \end{itemize}
+            \end{outlinebox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Slide: Young Diagrams and Subspace Labeling ---
+\begin{frame}{Labeling Subspaces: Young Diagrams (YDs)}
+    \begin{center}
+        \includegraphics[width=0.9\linewidth]{pic/young_diagrams.pdf}
+    \end{center}
+    \vspace{-1.5em}
+    % 用灰色盒子列出图对应的分划，作为图注
+    \begin{outlinebox}[WLGray]
+        \centering \textbf{Partitions of $n=4$}\\
+        \footnotesize
+        $[4], \quad [3,1], \quad [2,2], \quad [2,1,1], \quad [1^4]$
+    \end{outlinebox}
+    \vspace{-0.5em}
+    \begin{columns}[T,totalwidth=\textwidth]
+        % \tcbset{equal height group=k31}%
+        \begin{column}{0.60\textwidth}
+            % n=4 的特殊情况 (使用强调色 Orange - 对应图片2的关键点)
+            \begin{tceqbox}[5]{Crucial Subspaces for $n=4$}
+                For $d \ge 4$, all 5 irreps appear. 
+                \begin{itemize}
+                    \item $\mathcal{K}_{[4]}$: \textbf{Fully Symmetric} (Trivial, $+1$).
+                    \item $\mathcal{K}_{[1^4]}$: \textbf{Fully Antisymmetric} (Sign, $\pm 1$).
+                \end{itemize}
+                \small{\textit{Mixing these enables perfect parity identification.}}
+            \end{tceqbox}
+        \end{column}
+        \hfill
+        \begin{column}{0.38\textwidth}
+            \begin{tceqbox}[4]{}
+                \vspace{-1.5em}
+                \begin{align*}
+                    |\psi_e\rangle = |\psi_{\text{sym}}\rangle + |\psi_{\text{ant}}\rangle
+                \end{align*}
+            \end{tceqbox}
+            \begin{tceqbox}[2]{}
+                \vspace{-1.5em}
+                \begin{align*}
+                    |\psi_{\text{sym}}\rangle &\in \mathcal{K}_{[4]} \otimes \mathcal{H}_{[4]} \\
+                    |\psi_{\text{ant}}\rangle &\in \mathcal{K}_{[1^4]} \otimes \mathcal{H}_{[1^4]}
+                \end{align*}
+                \vspace{-1.8em}
+            \end{tceqbox}
+        \end{column}
+    \end{columns}
+
+
+
+\end{frame}
+\begin{frame}{Case 2: Restricted Dimensions ($d = 3$)}
+    \begin{columns}[T,totalwidth=\textwidth]
+        % \tcbset{equal height group=k31}%
+        \begin{column}{0.70\textwidth}
+            \begin{tceqbox}[5]{The Constraint Problem($d=3$)}
+                Fully antisymmetric partition $[1^4]$ is \textbf{forbidden}.
+                \vspace{-1em}
+                \[
+                    \ell([1^4]) = 4 > d=3 \implies |\psi_{\text{ant}}\rangle \text{ does not exist.}
+                \]
+            \end{tceqbox}
+        \end{column}
+        \hfill
+        \begin{column}{0.28\textwidth}
+            \begin{center}
+                \includegraphics[width=0.9\linewidth]{pic/yd43.pdf}
+            \end{center}
+        \end{column}
+    \end{columns}
+    
+    % 1. 问题提出 (橙色警告)
+
+    % 2. 解决方案：共轭对 (蓝色定理)
+    \begin{stylebox}[3]{Solution: Conjugate Pairs}
+        We use conjugate partitions $\lambda$ and $\lambda^T$ (reflecting YD along diagonal).
+        They satisfy a crucial representation property:
+        \begin{equation*}
+             D_{\lambda^T}(\sigma) = \text{sign}(\sigma) D_{\lambda}(\sigma)
+        \end{equation*}
+    \end{stylebox}
+    \vspace{-1.5em}
+    % 3. 具体构造
+    \begin{columns}[T,totalwidth=\textwidth]
+        \tcbset{equal height group=NC}%
+        \begin{column}{0.55\textwidth}
+            \begin{stylebox}[1]{New Construction:}
+                Combine partitions $\lambda=[3,1]$ and $\lambda^T=[2,1^2]$:
+                \vspace{-0.7em}
+                \[
+                    |\psi_e\rangle = |\psi_{[3,1]}\rangle + |\psi_{[2,1^2]}\rangle
+                \]
+            \end{stylebox}
+        \end{column}
+        \begin{column}{0.42\textwidth}
+            \begin{outlinebox}[WLGray]
+                \footnotesize
+                Even though we lack the trivial/sign singlets, these higher-dimensional irreps mimic the sign-flipping behavior required for orthogonality.
+            \end{outlinebox}
+        \end{column}
+    \end{columns}
+\end{frame}
+\begin{frame}{Case 3: Self-Conjugate Irreps \& The General Rule}
+    % 1. 问题提出 (橙色警告)
+    \begin{tceqbox}[1]{Definition: Self-Conjugate Partitions}
+        Its Young Diagram is symmetric along the main diagonal ($\lambda = \lambda^T$).
+        \begin{itemize}
+            \item \textbf{Example ($n=4$):} $\lambda = [2,2]$ (The square diagram).
+        \end{itemize}
+    \end{tceqbox}
+    \vspace{-1.0em}
+    % 2. 解决方案：共轭对 (蓝色定理)
+    \begin{columns}[T]
+        \begin{column}{0.48\textwidth}
+            \begin{tceqbox}[3]{Mechanism: Splitting under $A_n$}
+                Unlike generic irreps, self-conjugate ones split when restricted to even permutations ($A_n$):
+                \begin{align*}
+                    \mathcal{K}_\lambda \xrightarrow{\quad A_n \quad} \mathcal{K}_{\lambda a} \oplus \mathcal{K}_{\lambda b}
+                \end{align*}
+            \end{tceqbox}   
+        \end{column}
+        \begin{column}{0.45\textwidth}
+            \begin{center}
+                \includegraphics[width=0.22\linewidth]{pic/yd42.pdf}
+            \end{center}
+            \vspace{-1.5em}
+            \begin{tceqbox}[3]{}
+                Action of Odd Permutations:
+                \[
+                    \mathcal{K}_{\lambda a} \xrightarrow{\quad \sigma_{\text{odd}} \quad} \mathcal{K}_{\lambda b}
+                \]
+                % \small{\textit{Result: The sectors became orthogonal, enabling perfect parity distinction.}}
+            \end{tceqbox}
+
+        \end{column}
+    \end{columns}
+\end{frame}
+\begin{frame}{Example: Five Qutrits ($d=3$) \& Non-Trivial Coefficients}
+    \begin{columns}[T,totalwidth=\textwidth]
+        \tcbset{equal height group=k31}%
+        \begin{column}{0.53\textwidth}
+            % 1. 背景设定 (对应第一张图的上半部分)
+            % 使用样式 [1] (Definition/Orange)
+            \begin{tceqbox}[1]{Setup: Self-Conjugate Irrep $\mathcal{K}_{[3,1^2]}$}
+                Consider $(\mathbb{C}^3)^{\otimes 5}$. The partition $\lambda = [3,1^2]$ is self-conjugate with dimension $d_{[3,1^2]} = 6$.
+                \begin{itemize}
+                    \item Parity can be identified with certainty using any state $|\psi_e\rangle$ in the invariant subspace $\mathcal{K}_{[3,1^2]a} \otimes \mathcal{H}_{[3,1^2]}$.
+                \end{itemize}
+            \end{tceqbox}
+        \end{column}
+        \hfill
+        \begin{column}{0.45\textwidth}
+            % 2. 投影算符公式 (对应第一张图的公式 9)
+            % 使用样式 [3] (Mechanism/Blue)
+            \begin{tceqbox}[3]{Mechanism: Projector Construction}
+                The projector $\mathcal{P}_{[3,1^2]a}$ onto the subspace (analogous to $\mathcal{P}_{0a}$) is given by:
+                \[
+                    \mathcal{P}_{\lambda a} = \frac{d_\lambda/2}{|A_n|} \sum_{\sigma \in A_n} \bar{\chi}_{\lambda a}(\sigma) \sigma
+                \]
+            \end{tceqbox}
+        \end{column}
+    \end{columns}
+    % 3. 结果展示 (对应第二张图的公式 10)
+    % 展示非平庸系数，说明 A5 不可解
+    \begin{fceqbox}[3]{}
+        \vspace{-0.5em}
+        \scriptsize % 缩小字号以适应长公式
+        \begin{align*}
+            |\psi_e\rangle &= 3\big(|00012\rangle - |00021\rangle\big) 
+            - |00102\rangle + |00120\rangle + |00201\rangle - |00210\rangle \\
+            &\quad - |01002\rangle + |01020\rangle - |10002\rangle + |10020\rangle + \dots \\
+            &\quad + \sqrt{5}\big(|01200\rangle - |02100\rangle - |10200\rangle + |12000\rangle + \dots \big)
+        \end{align*}
+        \vspace{-1em}
+    \end{fceqbox}
+
+\end{frame}
+% ------------------------------------------------------------------------
+% Slide 1: Setup and Schur-Weyl Decomposition
+% ------------------------------------------------------------------------
+\begin{frame}{Proof (I): Hypothesis Testing \& Schur-Weyl Decomposition}
+    \begin{columns}[T,totalwidth=\textwidth]
+        
+        \begin{column}{0.48\textwidth}
+            % 1. Problem Formulation
+            \begin{stylebox}[4]{Binary Discrimination Problem}
+                Distinguish between even ($\rho_0$) and odd ($\rho_1$) mixtures of permutations.
+                \vspace{-1em}
+                \begin{align*}
+                    \rho_0 &= \frac{1}{|A_n|} \sum_{\sigma \in A_n} \sigma \ket{\psi_e}\bra{\psi_e} \sigma^{-1} \\ \rho_1 &= (12)\rho_0(12)
+                \end{align*}
+                \vspace{-1.2em}
+                \begin{itemize}
+                \item Perfect discrimination requires orthogonal supports: $\text{Tr}(\rho_0 \rho_1) = 0$.
+                \item If $\rho_0 = \rho_1$, then $P_s = 1/2$ (random guessing).
+            \end{itemize}
+            \end{stylebox}
+        \end{column}
+        \hfill
+        \begin{column}{0.48\textwidth}
+            \begin{stylebox}[5]{Schur-Weyl Decomposition}
+                The Hilbert space decomposes into sectors labeled by partitions $\lambda \vdash n$:
+                \vspace{-0.5em}
+                \begin{equation*}
+                    (\mathbb{C}^d)^{\otimes n} \cong \bigoplus_{\lambda \vdash n, \ell(\lambda) \le d} \mathcal{K}_\lambda \otimes \mathcal{H}_\lambda
+                \end{equation*}
+            \end{stylebox}
+            \begin{stylebox}[5]{Partition $\lambda$ Into 3 Sectors}
+                    \begin{enumerate}
+                        \item $\lambda = \lambda^T$ (Self-conjugate).
+                        \item $\lambda \neq \lambda^T$ and $\ell(\lambda^T) \le d$ (Conjugate pairs).
+                        \item $\ell(\lambda^T) > d$ (Restricted sector).
+                    \end{enumerate}
+            \end{stylebox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+
+% ------------------------------------------------------------------------
+% Slide 2: Block-Diagonal Structure under A_n
+% ------------------------------------------------------------------------
+\begin{frame}{Proof (II): Action of $A_n$ and Block Structure}
+    \begin{lemma}[Block-diagonal Form]
+        Under the restriction to the Alternating Group $A_n$, the irreps split differently in each sector. By Schur's lemma, $\rho_0$ takes the block-diagonal form:
+        \vspace{-1em}
+        $$ \rho_0 = \rho_0^{(i)} + \rho_0^{(ii)} + \rho_0^{(iii)} $$
+    \end{lemma}
+
+    \begin{oceqbox}[2]{\smartball[WLTeal]{1} [$\lambda = \lambda^T$]:} Irreps split $\mathcal{K}_\lambda \downarrow_{A_n} = \mathcal{K}_{\lambda a} \oplus \mathcal{K}_{\lambda b}$.
+    \begin{equation*}
+        \rho_0^{(\text{i})} = \sum_{\lambda \in R_{\text{i}}} \left( \frac{\mathds{1}_{\lambda a}}{d_\lambda/2} \otimes \Phi^{\lambda a} + \frac{\mathds{1}_{\lambda b}}{d_\lambda/2} \otimes \Phi^{\lambda b} \right)
+    \end{equation*}
+    \end{oceqbox}
+    \begin{outlinebox}[WLBlue]
+        \begin{center}
+        If either $\Phi^{\lambda a} = 0$ or $\Phi^{\lambda b} = 0$, then $\rho_0^{(1)}$ and $\rho_1^{(1)}$ have orthogonal supports;
+        \end{center}
+    \end{outlinebox}
+\end{frame}
+\begin{frame}{Proof (II): Action of $A_n$ and Block Structure}
+
+    % 保持你原有的 Box 结构
+    \begin{oceqbox}[2]{\smartball[WLTeal]{2} [$\lambda \neq \lambda^T$]:} Irreps appear in conjugate pairs, $(\mathcal{K}_\lambda \oplus \mathcal{K}_{\lambda^T}) \downarrow_{A_n} = \mathcal{K}_\lambda \otimes \mathbb{C}^2$.
+        \vspace{-1.2em}
+        \begin{equation*}
+            \rho_0^{(\text{ii})} = \sum_{\lambda \in R_{\text{ii}}} \frac{\mathds{1}_\lambda}{d_\lambda} \otimes \sum_{k=1}^{d_\lambda} \ket{\phi_k^\lambda}\bra{\phi_k^\lambda}, \quad \ket{\phi_k^\lambda} \in \mathbb{C}^2 \otimes \mathcal{H}_\lambda
+        \end{equation*}
+    \end{oceqbox}
+    \vspace{-1.4em}
+    \begin{columns}[T,totalwidth=\textwidth]
+        \tcbset{equal height group=sp}%
+        \begin{column}{0.50\textwidth}
+            \begin{tceqbox}[1]{}
+             $|\phi_k^\lambda\rangle = \sum_{p=\pm} |s_p\rangle |\phi_{k,p}^\lambda\rangle \in \mathbb{C}^2 \otimes \mathcal{H}_\lambda$.
+            \end{tceqbox}
+        \end{column}
+        \hfill
+        \begin{column}{0.48\textwidth}
+            \begin{tceqbox}[1]{}
+                \vspace{-1.2em}
+                \begin{align*}
+                    \ket{s_\pm} \xrightarrow{\sigma} \pm \ket{s_\pm} \quad \text{for } \sigma \in S_n \setminus A_n
+                \end{align*}
+            \end{tceqbox}
+        \end{column}
+    \end{columns}
+    \begin{tceqbox}[1]{}
+        \vspace{-0.5em}
+        \begin{equation*}
+            \text{Tr}\left(\rho_0^{(\text{ii})}\rho_1^{(\text{ii})}\right) = \sum_{\lambda \in R_{\text{ii}}} \sum_{k,l=1}^{d_\lambda} \frac{\left| \braket{\phi_{k,+}^\lambda|\phi_{l,+}^\lambda} - \braket{\phi_{k,-}^\lambda|\phi_{l,-}^\lambda} \right|^2}{d_\lambda}
+        \end{equation*}
+    \end{tceqbox}
+    \begin{tceqbox}[1]{}
+                $\implies$ Supports are orthogonal if $\braket{\phi_{k,+}^\lambda|\phi_{l,+}^\lambda} = \braket{\phi_{k,-}^\lambda|\phi_{l,-}^\lambda}$ for all $\lambda, k, l$.
+    \end{tceqbox}
+\end{frame}
+\begin{frame}{Proof (II): Action of $A_n$ and Block Structure}
+    \begin{oceqbox}[2]{\smartball[WLTeal]{3} } Restriction has no effect ($\mathcal{K}_\lambda \downarrow_{A_n} = \mathcal{K}_\lambda$).
+    \begin{equation*}
+        \rho_0^{(\text{iii})} = \sum_{\lambda \in R_{\text{iii}}} \frac{\mathds{1}_\lambda}{d_\lambda} \otimes \Phi^\lambda
+    \end{equation*}
+    \end{oceqbox}
+    \begin{outlinebox}[WLBlue]
+        \begin{center}
+        $\rho_0^{(\text{iii})}$ is invariant under all of $S_n$, so $\rho_0^{(\text{iii})} = \rho_1^{(\text{iii})}$.
+        \end{center}
+    \end{outlinebox}
+\end{frame}
+
+% ------------------------------------------------------------------------
+% Slide 3: Conditions for Distinguishability & Conclusion
+% ------------------------------------------------------------------------
+\begin{frame}{Proof (III): Distinguishability Conditions}
+    \begin{stylebox}[1]{$d \ge d_{\min} := \lceil \sqrt{n} \rceil$}
+            \smartball{1} and/or \smartball{2} hold, enabling perfect distinguishability.
+    \end{stylebox}
+    \begin{stylebox}[4]{$d \le d_{\min} := \lceil \sqrt{n} \rceil$}
+            \smartball{1} and \smartball{2} fail,only \smartball{3} remains
+            \begin{center}
+            $\rho_0 = \rho_1$ and $P_s = 1/2$.
+            \end{center}
+    \end{stylebox}
+    \begin{columns}[T]
+        \begin{column}{0.50\textwidth}
+            \begin{tceqbox}[1]{}
+                This geometrically corresponds to the impossibility of fitting certain Young Diagrams within a $d \times d$ box when $d$ is too small.
+            \end{tceqbox}
+        \end{column}
+        \begin{column}{0.40\textwidth}
+            \vspace{-1em}
+            \begin{center}
+                \includegraphics[width=0.8\textwidth]{pic/constraint_box.pdf}
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+% ------------------------------------------------------------------------
+% Slide: Entanglement Requirement
+% ------------------------------------------------------------------------
+\begin{frame}{Entanglement Requirement for Parity Identification}
+    \begin{stylebox}[1]{Question}
+                How entangled must a parity-detecting state be?
+            \end{stylebox}
+    \vspace{-1.5em}
+    \begin{columns}[T,totalwidth=\textwidth]
+        \begin{column}{0.54\textwidth}
+            \begin{tceqbox}[1]{Metric:geometric measure of entanglement(GME)}
+                \vspace{-1em}
+                \begin{equation*}
+                    E(\ket{\psi}) = 1 - \max_{\ket{\phi}\in \text{SEP}} |\braket{\phi|\psi}|^2
+                \end{equation*}
+            \end{tceqbox}
+            \begin{tceqbox}[1]{Minimum Required Entanglement:}
+                \vspace{-1em}
+                    \begin{equation*}
+                        E_{\lambda a} = 1 - \max_{\ket{\phi} \in \text{SEP}} \bra{\phi}\mathcal{P}_{\lambda a}\ket{\phi}
+                    \end{equation*}
+                    This lower bounds the entanglement of any parity-detecting state supported on this subspace.
+            \end{tceqbox}
+        \end{column}
+        \begin{column}{0.45\textwidth}
+
+            \begin{table}
+                \centering
+                \small % 稍微缩小表格字体以适应页面
+                \caption{Minimum required ($E_{\lambda a}$) vs. known maximal ($E_{\max}$) entanglement.}
+                \begin{tabular}{ccc}
+                    \hline \hline
+                    $n$ & $E_{\lambda a}$ & $E_{\max}$ \\
+                    \hline
+                    3 & $5/9$ & $5/9^\dagger$ \\
+                    4 & $7/9$ & $7/9^\dagger$ \\
+                    5 & $17/20$ & $\approx 0.96$ \\
+                    \hline \hline
+                \end{tabular}
+                \begin{footnotesize}
+                \newline $\dagger$ indicates proven maxima.
+                \end{footnotesize}
+
+            \end{table}
+            \begin{tceqbox}[1]{Observation:}
+                maximal for $n=3, 4$, and close to the maximum for $n=5$.
+            \end{tceqbox}
+        \end{column}
+
+    \end{columns}
+
+\end{frame}
+\begin{frame}{Summary and Outlook}
+    \begin{columns}[T,totalwidth=\textwidth]
+        \tcbset{equal height group=s1}%
+        \begin{column}{0.49\textwidth}
+            \begin{tceqbox}{A Sharp Quantum Advantage}
+                Achievable with $d = \lceil \sqrt{n} \rceil$.
+            \end{tceqbox}
+        \end{column}
+        \hfill
+        \begin{column}{0.49\textwidth}
+            \begin{tceqbox}{}
+                    Relies purely on permutation symmetry without invoking specific dynamics.
+            \end{tceqbox}
+        \end{column}
+    \end{columns}
+    \begin{columns}[T,totalwidth=\textwidth]
+        \tcbset{equal height group=s2}%
+        \begin{column}{0.49\textwidth}
+            \begin{tceqbox}{}
+                Requires \textbf{no ancillas} (increasing multiplicities does not help).
+            \end{tceqbox}
+        \end{column}
+        \hfill
+        \begin{column}{0.49\textwidth}
+            \begin{tceqbox}{}
+                    Demands entanglement close to the theoretical maximum.
+            \end{tceqbox}
+        \end{column}
+    \end{columns}
+    \begin{columns}[T,totalwidth=\textwidth]
+        % \tcbset{equal height group=s3}%
+        \begin{column}{0.49\textwidth}
+            \begin{tceqbox}[5]{Practical Implementations:}
+                \begin{itemize}
+                    \item State preparation via experimentally accessible Hamiltonians.
+                    \item Designing specific quantum circuits and measurements.
+                \end{itemize}
+            \end{tceqbox}
+        \end{column}
+        \hfill
+        \begin{column}{0.49\textwidth}
+            \begin{tceqbox}[5]{Theoretical Extensions:}
+                \begin{itemize}
+                    \item Assessing robustness of the $\sqrt{n}$ advantage under noise.
+                    \item Exploring other symmetry groups.
+                \end{itemize}
+            \end{tceqbox}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+
+% --- Slide 12: End ---
+% \ThankYouPage
+
+\end{document}

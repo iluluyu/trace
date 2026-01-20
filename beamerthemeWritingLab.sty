@@ -1,0 +1,631 @@
+% beamerthemeWritingLab.sty
+% V4.0 Quantum Spectrum: 量子信息风格配色优化版
+% 优化目标：符合量子信息学科审美、护眼、现代扁平化设计
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerthemeWritingLab}[2025/11/23 v4.0 Quantum Spectrum]
+
+\mode<presentation>
+
+% =============================================
+% 1. 基础宏包加载
+% =============================================
+\RequirePackage{xcolor}
+\RequirePackage{tikz}
+\RequirePackage{transparent} 
+\RequirePackage{varwidth} 
+\RequirePackage[most]{tcolorbox} 
+\RequirePackage{etoolbox}
+
+\usetikzlibrary{fadings, patterns, calc} 
+
+% 渐变计数器
+\newcounter{gradientcounter}
+
+% =============================================
+% 2. 颜色定义 (量子光谱配色方案)
+% =============================================
+
+% --- 核心主题色 (深色，用于文字和线条) ---
+% Quantum Teal: 主色，代表量子比特、科技、冷静
+\definecolor{WLTeal}{HTML}{00897B}      
+% Superposition Violet: 辅色，代表数学、叠加态、优雅
+\definecolor{WLViolet}{HTML}{5E35B1}    
+% Photon Orange: 强调色，代表能量、光子、警告
+\definecolor{WLOrange}{HTML}{FF7043}    
+% Science Blue: 结构色，代表学术、稳重 (用于标题栏)
+\definecolor{WLBlue}{HTML}{1565C0}      
+% Logic Gray: 中性色，代表逻辑、辅助信息
+\definecolor{WLGray}{HTML}{546E7A}  
+% Logic Green: 算法色，代表执行、步骤、代码
+\definecolor{WLGreen}{HTML}{2E7D32}    
+
+% --- 护眼背景色 (极淡色，用于色块背景) ---
+% 采用低饱和度设计，接近纸张质感，减少屏幕刺眼感
+\definecolor{BG_Teal}{HTML}{E0F2F1}     % 极淡青
+\definecolor{BG_Violet}{HTML}{EDE7F6}   % 极淡紫
+\definecolor{BG_Orange}{HTML}{FBE9E7}   % 极淡橙
+\definecolor{BG_Blue}{HTML}{E3F2FD}     % 极淡蓝
+\definecolor{BG_Gray}{HTML}{F5F7F8}     % 极淡灰 (冷调)
+
+% Put this BEFORE your stylebox definition
+\newcommand{\ListBg}{WLBlue}  % 全局默认值
+\newcommand{\ListFg}{white}
+
+% =============================================
+% 3. Tcolorbox 容器定义
+% =============================================
+
+\def\globalradius{10pt} 
+
+% --- 类型 A: 细线框 (通用高亮) ---
+\newtcolorbox{outlinebox}[1][WLTeal]{
+    enhanced,
+    colback=white,
+    colframe=#1,          % 边框颜色
+    boxrule=1pt,
+    arc=\globalradius,
+    boxsep=0pt,
+    left=6pt, right=6pt, top=5pt, bottom=5pt
+}
+
+% --- 类型 B: 填充框 (强调区域) ---
+\newtcolorbox{fillbox}[1][BG_Teal]{
+    enhanced,
+    colback=#1,
+    colframe=#1,
+    boxrule=0pt,
+    arc=\globalradius,
+    boxsep=0pt,
+    left=8pt, right=8pt, top=6pt, bottom=6pt,
+    fonttitle=\bfseries,
+    title after break={}
+}
+
+% =============================================
+% 4. Beamer 全局配色映射
+% =============================================
+\setbeamercolor{normal text}{fg=black!90, bg=white} % 正文不使用纯黑，减轻对比疲劳
+\setbeamercolor{structure}{fg=WLBlue}               % 结构元素使用稳重的蓝色
+\setbeamercolor{frametitle}{fg=WLBlue, bg=white}
+\setbeamercolor{title}{fg=black, bg=white}
+
+% Block 样式 (原生 Block)
+\setbeamercolor{block title}{fg=white, bg=WLBlue}
+\setbeamercolor{block body}{fg=black!90, bg=BG_Blue} 
+
+% Alert 样式 (警告/高亮)
+\setbeamercolor{block title alerted}{fg=white, bg=WLOrange}
+\setbeamercolor{block body alerted}{fg=black!90, bg=BG_Orange}
+\setbeamercolor{alerted text}{fg=WLOrange}
+
+% =============================================
+% 5. 布局与字体设置
+% =============================================
+\useinnertheme[shadow=false]{rounded} 
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{navigation symbols}{}
+\usefonttheme{professionalfonts} 
+\setbeamerfont{frametitle}{size=\Large, series=\bfseries}
+% =============================================
+% [新增] 自定义标题栏布局 (Frametitle Layout)
+% 修复默认标题栏占用过多垂直空间的问题
+% =============================================
+\setbeamertemplate{frametitle}{
+    \nointerlineskip % 防止插入额外的行间距
+    
+    % --- 标题盒子 ---
+    % wd=\paperwidth : 宽度占满全屏
+    % ht=2.5ex       : 标题文字的高度预留 (根据字号调整)
+    % dp=1.0ex       : 标题文字的深度预留 (防止字母 g, j, p, q, y 被切断)
+    % leftskip=0.5em : 左侧缩进量
+    \begin{beamercolorbox}[wd=\paperwidth, ht=2.5ex, dp=1.0ex, leftskip=0.5em]{frametitle}
+        \usebeamerfont{frametitle}\insertframetitle
+    \end{beamercolorbox}
+    
+    % --- 垂直间距修正 (关键) ---
+    % 修改下方的数值来拉近正文与标题的距离
+    % 正数增加间距，负数减小间距
+    \vspace{-1.5em} 
+}
+
+% --- 页脚: 智能流体胶囊 (Smart Liquid Capsule) ---
+% 包含: 全息渐变 + 智能文字反色技术
+
+% =============================================
+% 优化后的页脚: 智能流体胶囊 (Smart Liquid Capsule - Optimized)
+% 优化点 1: 首页强制为正圆，后续线性增长，形状更自然。
+% 优化点 2: 采用深色轨道 + 全程白色文字，消除边缘“阴阳字”现象。
+% =============================================
+
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \begin{tikzpicture}[remember picture, overlay]
+      % 1. 参数定义 (保持不变)
+      \def\barwidth{60pt}      % 总宽度
+      \def\barheight{16pt}     % 高度
+      \def\xoffset{20pt}       % 离边缘的距离
+      \def\yoffset{5pt} 
+      \def\cradius{8pt}        % 全圆角半径 (高度的一半)
+      
+      % 2. 坐标计算 (保持不变)
+      \coordinate (br) at ($(current page.south east) + (-\xoffset, \yoffset)$);
+      \coordinate (bl) at ($(br) - (\barwidth, 0)$);
+      \coordinate (tr) at ($(br) + (0, \barheight)$);
+      \coordinate (tl) at ($(bl) + (0, \barheight)$);
+      \coordinate (center) at ($(bl)!0.5!(tr)$);
+      
+      % 3. 进度宽度计算 (核心数学优化：插值法)
+      % 目标：第1页宽度 = barheight (正圆); 最后一页宽度 = barwidth (全长)
+      \pgfmathtruncatemacro{\total}{\inserttotalframenumber}
+      \pgfmathtruncatemacro{\current}{\insertframenumber}
+      
+      \ifnum\total>1
+          % 计算当前进度比例 (从 0.0 到 1.0)
+          \pgfmathsetmacro{\progress}{(\current - 1) / (\total - 1)}
+          % 宽度在 [高度, 总宽度] 之间插值
+          \pgfmathsetmacro{\fillw}{\barheight + \progress * (\barwidth - \barheight)}
+      \else
+          % 如果只有1页或0页，直接显示全长
+          \pgfmathsetmacro{\fillw}{\barwidth}
+      \fi
+      
+      % --- 绘制图层 ---
+
+      % Layer A: 阴影层 (增加悬浮感) - 保持不变
+      \fill[TitleBlue!20, rounded corners=\cradius, xshift=1pt, yshift=-1pt] 
+           (bl) rectangle (tr);
+
+      % Layer B: 轨道槽 (Track) - 【修改点：颜色变深】
+      % 使用主题定义的逻辑灰 WLGray，与整体配色协调，提供足够的对比度显示白字
+      \fill[WLGray!30!white, rounded corners=\cradius] (bl) rectangle (tr);
+
+      % Layer C: 底层文字 (Base Text) - 【修改点：颜色改为白色】
+      % 因为轨道变深了，所以这里直接用白色文字
+      \node at (center) [font=\scriptsize\bfseries\sffamily, text=white] 
+            {\insertframenumber{} / \inserttotalframenumber};
+
+      % Layer D: 进度条主体 (Clip Scope)
+      \begin{scope}
+          % 1. 裁剪区域：根据优化后的 fillw 进行裁剪
+          \clip[rounded corners=\cradius] (bl) rectangle ($(bl) + (\fillw pt, \barheight)$);
+          
+          % 2. 绘制流体渐变条 (保持不变)
+          \shade[left color=TitleBlue, right color=TitleOrange, middle color=TitleBridge, shading angle=-30] 
+                (bl) rectangle (tr);
+                
+          % 3. 顶层文字 (Overlay Text) - 保持白色
+          % 这一层文字叠加在渐变条上，保持白色以确保清晰度。
+          % 由于底层文字现在也是白色的，所以两者完美重合，不再有“切割”感。
+          \node at (center) [font=\scriptsize\bfseries\sffamily, text=white] 
+                {\insertframenumber{} / \inserttotalframenumber};
+      \end{scope}
+
+  \end{tikzpicture}
+}
+
+% =============================================
+% 6. 渐变标题逻辑 (Quantum Glass - 现代轻量化高反差版)
+% =============================================
+
+% --- 颜色定义：参照 iOS 系统级色彩，轻盈且清晰 ---
+
+% 1. Azure Clear: 蔚蓝澄空
+%    [位置：左侧/冷端]
+%    这是一个标准的“科技蓝”，比之前的深蓝 (#0052CC) 提亮了 30%。
+%    它既保留了量子信息的专业感，又去掉了“重工业”的沉闷感。
+%    在白底上阅读非常舒适，像冬天的天空一样干净。
+\definecolor{TitleBlue}{HTML}{007AFF} 
+
+% 2. Persimmon Glow: 暖柿微光
+%    [位置：右侧/暖端]
+%    我们放弃了厚重的红橙色，选用了这种高明度的鲜橙色。
+%    它非常显眼，带来了强烈的温度感，但完全不压抑。
+%    (注：为了保证文字清晰，比纯黄橙稍微加深了一点点)
+\definecolor{TitleOrange}{HTML}{FF6D00} 
+
+% 3. Amethyst Mist: 紫晶薄雾
+%    [位置：中间/桥梁]
+%    这是“去重”的关键。
+%    之前的深紫/深红太抢眼了，导致中间视觉压力大。
+%    现在的这个紫色，带有一点粉调，明度较高。
+%    它起到了完美的柔顺剂作用，让“冰”化为“水”，再变成“汽”。
+\definecolor{TitleBridge}{HTML}{AF52DE} 
+
+\newcommand{\GradientTitle}[1]{%
+    \stepcounter{gradientcounter}%
+    \begin{tikzfadingfrompicture}[name=fading\thegradientcounter]
+        \node [text=white, inner sep=10pt, outer sep=0pt] 
+              {\begin{varwidth}{\linewidth}\centering#1\end{varwidth}};
+    \end{tikzfadingfrompicture}%
+    \begin{tikzpicture}
+        \node [text=white, inner sep=10pt, outer sep=0pt, opacity=0] (textnode) 
+              {\begin{varwidth}{\linewidth}\centering#1\end{varwidth}};
+        
+        % --- 渐变逻辑 ---
+        % 路线：蔚蓝 -> 紫晶 -> 暖橙
+        % 角度：-30度 (优雅倾斜)
+        % 
+        % 视觉体验：
+        % 这种配色就像透过一块高科技玻璃看世界。
+        % 没有黑色的沉重，没有灰色的浑浊。
+        % 只有纯粹的光色流转，既保持了冬日的冷暖反差，
+        % 又让人觉得轻盈、透气、现代。
+        \shade[path fading=fading\thegradientcounter, fit fading=false, 
+               left color=TitleBlue, 
+               right color=TitleOrange,
+               middle color=TitleBridge, 
+               shading angle=-30] 
+               (textnode.south west) rectangle (textnode.north east);
+    \end{tikzpicture}%
+}
+
+\setbeamertemplate{title page}{
+    \vbox{}\vfill
+    \begingroup\centering
+        \GradientTitle{\Huge\bfseries\inserttitle}\par
+        \ifx\insertsubtitle\@empty\else
+            \vspace{0.5em}{\usebeamerfont{subtitle}\color{WLGray}\large\insertsubtitle\par}
+        \fi
+        \vspace{1.5cm} 
+        {\usebeamerfont{author}\bfseries\Large\insertauthor}\par
+        \vspace{0.5em}{\usebeamerfont{institute}\small\color{WLGray}\insertinstitute}\par
+        \vspace{0.5em}{\usebeamerfont{date}\small\color{WLGray}\insertdate}\par
+    \endgroup\vfill
+}
+
+\newcommand{\ThankYouPage}[1][Thanks for your\\attention.]{
+    \begin{frame}[plain,noframenumbering]
+        \centering\vfill
+        \GradientTitle{\textit{\bfseries\fontsize{40pt}{45pt}\selectfont #1}}
+        \vfill
+    \end{frame}
+}
+
+% =============================================
+% 7. 目录 (TOC) 美化设置
+% =============================================
+
+% --- 章节 (Section) 样式 ---
+\setbeamertemplate{section in toc}{%
+  \leavevmode\leftskip=2.5em%
+  \llap{%
+    \begin{tikzpicture}[baseline=(node.base)]
+      \node[
+        fill=WLTeal,           % 使用主色 Teal
+        text=white,            
+        rounded corners=3pt,   
+        inner sep=3pt,         
+        minimum width=1.8em,   
+        minimum height=1.6em,
+        font=\bfseries\small   
+      ] (node) {\inserttocsectionnumber};
+    \end{tikzpicture}%
+    \hspace{0.8em}%
+  }%
+  {\color{WLBlue}\bfseries\large\inserttocsection}\par % 标题使用结构蓝
+  \vspace{1.2em} 
+}
+
+% --- 子章节 (Subsection) 样式 ---
+\setbeamertemplate{subsection in toc}{%
+  \leavevmode\leftskip=5em%
+  \llap{%
+    \begin{tikzpicture}[baseline=(node.base)]
+       \fill[WLOrange] (0,0.1) circle (2pt); % 使用强调色 Orange
+       \node (node) at (0,0) {};
+    \end{tikzpicture}%
+    \hspace{0.5em}%
+  }%
+  {\color{WLGray}\inserttocsubsection}\par
+  \vspace{0.6em}
+}
+
+% =============================================
+% 8. 数学环境定义 (优化版：Proof 更紧凑)
+% =============================================
+
+% --- 0. 清除旧定义 ---
+\let\theorem\relax    \let\endtheorem\relax
+\let\lemma\relax      \let\endlemma\relax
+\let\proof\relax      \let\endproof\relax
+\let\corollary\relax  \let\endcorollary\relax
+
+% --- 1. 基础样式 (Compact Style) ---
+\tcbset{
+    compactbox/.style={
+        enhanced,
+        boxrule=0pt,
+        arc=10pt,
+        % [微调] 减小底部边距，从 8pt 改为 5pt，让盒子不那么“空”
+        left=10pt, right=10pt, top=8pt, bottom=5pt, 
+        fonttitle=\bfseries\large,
+        attach title to upper={\quad},
+        after skip=1.5em,
+    }
+}
+
+% --- 2. Theorem: 量子深蓝 (TitleBlue) ---
+\newtcolorbox{theorem}[1][]{
+    compactbox,
+    colback=TitleBlue!10!white,          % 背景极淡蓝
+    coltitle=TitleBlue,                 % 标题深蓝
+    title={Theorem\ifstrempty{#1}{}{ (#1).}}, 
+    attach title to upper={\quad},
+}
+
+% --- 3. Lemma: 量子青 (TitleBridge) ---
+\newtcolorbox{lemma}[1][]{
+    compactbox,
+    colback=TitleBridge!10!white,        % 背景极淡青
+    coltitle=TitleBridge!80!black,      % 标题深青
+    title={Lemma\ifstrempty{#1}{}{ (#1).}}, 
+    attach title to upper={\quad},
+}
+
+\newtcolorbox{corollary}[1][]{
+    compactbox,
+    colback=TitleBridge!10!white, 
+    coltitle=TitleBridge!80!black, 
+    title={Corollary\ifstrempty{#1}{}{ (#1).}}, 
+    attach title to upper={\quad},
+}
+
+% --- 4. Proof: 紧凑灰 (TitleOrange/Mint 的灰调) ---
+\newtcolorbox{proof}[1][Proof]{
+    compactbox,
+    colback=black!3,                    % 极淡灰背景
+    coltitle=black!60,                  % 深灰标题
+    title={#1.},
+    fontupper=\itshape,                 % 斜体正文
+    attach title to upper={\quad},
+    after upper={\par\vspace{-0.7em}\hfill\textcolor{black!60}{\ensuremath{\blacksquare}}}, 
+}
+
+% --- Algorithm: 逻辑绿 (WLGreen) ---
+% 用法: \begin{algorithm}[Grover's Search] ... \end{algorithm}
+\newtcolorbox{algorithm}[1][]{
+    compactbox,
+    colback=WLGreen!6!white,    % 极淡绿背景
+    coltitle=WLGreen,           % 深绿标题
+    title={Algorithm\ifstrempty{#1}{}{ (#1).}}, 
+}
+
+% 辅助逻辑：数字 -> 颜色 映射表 (Fixed for xcolor)
+\ExplSyntaxOn
+\NewExpandableDocumentCommand{\wlnumtocolor}{m}
+ {
+  \str_case:nnF { #1 }
+   {
+    {1}{WLTeal}       % 1: 主色
+    {2}{WLGreen}      % 2: 算法/正确
+    {3}{TitleBlue}    % 3: 定理/核心
+    {4}{TitleBridge}  % 4: 引理/辅助
+    {5}{WLOrange}     % 5: 强调/警告
+    {6}{WLGray}       % 6: 备注
+   }
+   { #1 } % 如果输入的不是1-6，直接输出原内容(例如 "red")
+ }
+\ExplSyntaxOff
+
+% =============================================
+% 5. Style Box: 万能自定义框 (支持数字索引版)
+% 用法: \begin{stylebox}[数字]{标题} ... \end{stylebox}
+% =============================================
+
+\newtcolorbox{stylebox}[2][1]{
+    compactbox,
+    % 背景色：先解析数字 -> 颜色，再计算淡色
+    colback=\wlnumtocolor{#1}!10!white,     
+    % 标题色：解析数字 -> 颜色
+    coltitle=\wlnumtocolor{#1},            
+    title={\ifstrempty{#2}{}{#2.}},
+    attach title to upper={\quad},            
+}
+
+% =============================================
+% 新增：Side-by-Side 垂直居中框 (支持数字索引版)
+% 用法：\begin{sidebox}[数字]{标题} 公式... \end{sidebox}
+% =============================================
+\newtcolorbox{sidebox}[2][1]{
+    enhanced,
+    boxrule=0pt,                
+    arc=10pt,                   
+    colback=\wlnumtocolor{#1}!10!white,  % 动态背景
+    sidebyside,                 
+    sidebyside align=center,    
+    sidebyside gap=0pt,       
+    lefthand width=3cm,       
+    segmentation hidden,        
+    % 【关键】注入颜色逻辑
+    before upper={%
+        \textcolor{\wlnumtocolor{#1}}{\textbf{\large #2}}%
+        \tcblower%
+        \colorlet{CurrentBoxColor}{\wlnumtocolor{#1}}% <--- 确保右侧也是这个颜色
+    },
+    top=8pt, bottom=8pt, left=5pt, right=5pt
+}
+
+% =============================================
+% 新增：EqBox - 纯公式紧凑框 (无标题，零间距)
+% 用法：\begin{eqbox}[颜色数字] ... \end{eqbox}
+% 特点：自动消除公式上下的默认留白，实现极致紧凑
+% =============================================
+\newtcolorbox{eqbox}[1][1]{
+    enhanced,
+    boxrule=0pt,
+    arc=10pt,
+    % 1. 颜色逻辑 (保持一致)
+    colback=\wlnumtocolor{#1}!10!white,
+    % 2. 紧凑布局
+    boxsep=0pt,          % 清除通用内边距
+    left=10pt, right=10pt, % 左右留白
+    % left=0pt, right=0pt, % 左右留白
+    top=6pt, bottom=6pt,   % 上下留白 (这里控制紧凑度，可随喜好微调)
+    % top=0pt, bottom=0pt,   % 上下留白 (这里控制紧凑度，可随喜好微调)
+    % 3. 核心黑魔法：消除 LaTeX 公式自带的垂直间距
+    before upper={%
+        \setlength{\abovedisplayskip}{0pt}%
+        \setlength{\belowdisplayskip}{0pt}%
+        \setlength{\abovedisplayshortskip}{0pt}%
+        \setlength{\belowdisplayshortskip}{0pt}%
+    },
+    % 4. 确保垂直对齐自然
+    check odd page=true
+}
+% =============================================
+% 新增：Color EqBox - 描边风格 (Outline Style)
+% 特点：白底、彩字、彩边框 -> 极致清爽
+% =============================================
+
+% 定义颜色处理逻辑
+\tcbset{
+    wleqscheme/.code={%
+        % 1. 预计算颜色，防止报错
+        \edef\tempcolor{\wlnumtocolor{#1}}%
+        \tcbset{
+            % --- 核心外观修改 ---
+            colback=white,             % 背景变白
+            colframe=\tempcolor!60!white,       % 边框变彩
+            boxrule=1.5pt,             % 边框宽度 (1.5pt 比较有质感)
+            % --------------------
+            before upper={%
+                \setlength{\abovedisplayskip}{0pt}%
+                \setlength{\belowdisplayskip}{0pt}%
+                \setlength{\abovedisplayshortskip}{0pt}%
+                \setlength{\belowdisplayshortskip}{0pt}%
+            }
+        }%
+    }
+}
+
+\newtcolorbox{fceqbox}[1][1]{
+    enhanced,
+    arc=8pt,          % 圆角稍微收一点点，配合描边风格更精神
+    boxsep=0pt, 
+    left=10pt, right=10pt, 
+    top=8pt, bottom=8pt, % 稍微增加一点内部留白，防止文字贴边框太紧
+    fontupper=\color{\tempcolor}, % 内容变彩色
+    % 调用上面定义的处理逻辑
+    wleqscheme={#1}
+}
+\newtcolorbox{ceqbox}[1][1]{
+    enhanced,
+    arc=8pt,          % 圆角稍微收一点点，配合描边风格更精神
+    boxsep=0pt, 
+    left=10pt, right=10pt, 
+    top=8pt, bottom=8pt, % 稍微增加一点内部留白，防止文字贴边框太紧
+    wleqscheme={#1}
+}
+
+% =============================================
+% 新增：Fill EqBox - 填充风格
+% 特点：彩底、白字 
+% =============================================
+
+\tcbset{
+    wlfilledscheme/.code={%
+        \edef\tempcolor{\wlnumtocolor{#1}}%
+        \tcbset{
+            colback=\tempcolor,
+            colframe=\tempcolor,
+            boxrule=0pt,
+            fontupper=\color{white},
+            before upper={%
+                \setlength{\abovedisplayskip}{0pt}%
+                \setlength{\belowdisplayskip}{0pt}%
+                \setlength{\abovedisplayshortskip}{0pt}%
+                \setlength{\belowdisplayshortskip}{0pt}%
+            }
+        }%
+    }
+}
+
+\newtcolorbox{feqbox}[1][1]{
+    enhanced,
+    arc=8pt,              % 圆角
+    boxsep=0pt, 
+    left=10pt, right=10pt, 
+    top=8pt, bottom=8pt,  % 保持紧凑但有呼吸感
+    % 调用上面定义的填充逻辑
+    wlfilledscheme={#1}
+}
+
+% =============================================
+% 新增：Bold Fill EqBox - 强力填充风格 (加粗版)
+% 特点：彩底 + 白字 + 加粗 -> 极致的视觉冲击力和可读性
+% =============================================
+
+\tcbset{
+    wlboldfilledscheme/.code={%
+        \edef\tempcolor{\wlnumtocolor{#1}}%
+        \tcbset{
+            colback=\tempcolor,
+            colframe=\tempcolor,
+            boxrule=0pt,
+            fontupper=\color{white}\bfseries\boldmath,
+            before upper={%
+                \setlength{\abovedisplayskip}{0pt}%
+                \setlength{\belowdisplayskip}{0pt}%
+                \setlength{\abovedisplayshortskip}{0pt}%
+                \setlength{\belowdisplayshortskip}{0pt}%
+            }
+        }%
+    }
+}
+
+\newtcolorbox{bfeqbox}[1][1]{
+    enhanced,
+    arc=8pt,              
+    boxsep=0pt, 
+    left=10pt, right=10pt, 
+    top=8pt, bottom=8pt,  
+    % 调用上面定义的加粗逻辑
+    wlboldfilledscheme={#1}
+}
+% =============================================
+% 9. 全局列表样式 (封装版)
+% =============================================
+
+% --- 1. 有序列表 (模板保持干净，只引用变量) ---
+\setbeamertemplate{enumerate item}{%
+  \raisebox{-3pt}{%
+    \begin{tikzpicture}
+      \node[
+        fill=\ListBg,          % <--- 只引用变量，不包含逻辑
+        circle,                 
+        text=\ListFg,          
+        inner sep=0pt,          
+        minimum size=1.2em,     
+        font=\scriptsize\bfseries 
+      ] {\insertenumlabel};
+    \end{tikzpicture}%
+  }%
+}
+
+% --- 2. 二级列表 ---
+\setbeamertemplate{enumerate subitem}{%
+  \raisebox{-1pt}{%
+    \begin{tikzpicture}
+      \node[
+        fill=\ListBg!70!white, % <--- 变量变淡
+        rounded corners=3pt,        
+        rectangle, 
+        text=\ListFg,          
+        inner sep=1.5pt, 
+        minimum size=1.1em,
+        font=\tiny\bfseries
+      ] {\insertenumlabel};
+    \end{tikzpicture}%
+  }%
+}
+
+% --- 3. 无序列表 ---
+\setbeamertemplate{itemize item}{%
+  \raisebox{1pt}{\tikz\fill[\ListBg] (0,0) circle (0.22em);}%
+}
+
+\setbeamertemplate{itemize subitem}{%
+  \raisebox{1pt}{\tikz\fill[\ListBg!70!white] (0,0) circle (0.18em);}%
+}
+\mode<all>

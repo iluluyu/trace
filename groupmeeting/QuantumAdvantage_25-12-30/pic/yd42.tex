@@ -1,0 +1,29 @@
+\documentclass[tikz,border=2pt]{standalone}
+
+% --- 定义颜色 ---
+\definecolor{midTeal}{HTML}{00897B}
+
+\begin{document}
+\begin{tikzpicture}[
+    border_style/.style={thick}
+]
+
+    % --- 绘制宏 ---
+    \newcommand{\yd}[4]{
+        \node[inner sep=0] (#1) at (#2) {};
+        \begin{scope}[shift={(#1.north west)}]
+            \foreach \row [count=\r] in {#3} {
+                \foreach \col in {1,...,\row} {
+                    \draw[color=#4, border_style] (0.4*\col-0.4, -0.4*\r+0.4) rectangle ++(0.4, -0.4);
+                }
+            }
+        \end{scope}
+    }
+
+    % --- 绘制图形 ---
+
+    % 1. Partition [2,2] (田字格) 放在原点
+    \yd{p22}{0,0}{2,2}{midTeal}
+
+\end{tikzpicture}
+\end{document}
